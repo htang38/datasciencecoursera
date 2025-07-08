@@ -23,14 +23,19 @@ best <- function(state, outcome) {
   best_hosp_data <- cbind(hosp_name, state_col, outcome_col)
   
   # get rows only with given state
-  if (!state %in% best_hosp_data[,2]) { # if state invalid
+  if (!(state %in% best_hosp_data[,2])) {
     stop("invalid state")
+  } else {
+    best_hosp_data <- best_hosp_data[best_hosp_data[,2] == state,]
   }
   
   # find lowest 30-day death rate
   outcome_vec <- as.numeric(best_hosp_data[,3])
   outcome_vec <- na.omit(outcome_vec)
   min_death_rate = min(outcome_vec)
+  
+  # format to match table (1 decimal place)
+  min_death_rate = format(min_death_rate, nsmall = 1)
   
   # find hospital with this death rate
   best_hosp <- (best_hosp_data[best_hosp_data[,3] == min_death_rate])[1]
