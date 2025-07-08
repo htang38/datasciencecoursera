@@ -16,23 +16,16 @@ best <- function(state, outcome) {
   } else if (outcome == "pneumonia") {
     outcome_col <- data[,23]
   } else { # else, invalid outcome; print error
-    stop("Error in best(", state, ", ", outcome, ") : invalid outcome", 
-         sep = "\"")
+      stop("invalid outcome")
   }
   
   # combine columns
   best_hosp_data <- cbind(hosp_name, state_col, outcome_col)
   
-  # get rows only with given state using tryCatch()
-  result <- tryCatch({
-    # if the following line fails, then state is invalid
-    best_hosp_data <- best_hosp_data[best_hosp_data[,2] == state,]
-  },
-  error = function(e) {
-    # print error message
-    cat("Error in best(", state, ", ", outcome, ") : invalid state", 
-        sep = "\"")
-  })
+  # get rows only with given state
+  if (!state %in% best_hosp_data[,2]) { # if state invalid
+    stop("invalid state")
+  }
   
   # find lowest 30-day death rate
   outcome_vec <- as.numeric(best_hosp_data[,3])
